@@ -22,6 +22,7 @@ public class miclienteSearchSolrj {
     public static void main(String[] args) throws IOException, SolrServerException {
         String fileName = "CISI.QRY";
         String Texto = "";
+        int qryIndex=1;
         //LEO FICHERO QRY
         Scanner scan = new Scanner(new File(fileName));
         while (scan.hasNextLine()) {
@@ -46,7 +47,7 @@ public class miclienteSearchSolrj {
                 Texto = Texto.replace(")","");
                 //**************************
                 //EJECUTO CONSULTA CON LAS 5 PALABRAS
-                System.out.println("Busquedas para: " + Texto);
+                System.out.println("Busquedas para consulta (" + qryIndex++ +"): " + Texto);
                 HttpSolrClient solr = new HttpSolrClient.Builder("http://localhost:8983/solr/lacoleccion").build();
                 SolrQuery query = new SolrQuery();
                 query.set("q", "Texto:" + Texto);
@@ -56,6 +57,7 @@ public class miclienteSearchSolrj {
                 SolrDocumentList docs = rsp.getResults();
                 for (int j = 0; j < docs.size(); ++j) {
                     System.out.println(docs.get(j));
+                    
                 }
                 //***********************
                 Texto = "";
