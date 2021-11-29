@@ -5,7 +5,9 @@
 package miclienteSolarj;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -21,10 +23,16 @@ public class miclienteSearchSolrj {
 
     public static void main(String[] args) throws IOException, SolrServerException {
         String fileName = "CISI.QRY";
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        fichero = new FileWriter("c:/Users/Daniel Marian/Desktop/RESULTADOS.TREC");
+        pw = new PrintWriter(fichero);
         String Texto = "";
-        int qryIndex=1;
+        String toTREC = "";
+        int qryIndex = 1;
         //LEO FICHERO QRY
         Scanner scan = new Scanner(new File(fileName));
+        
         while (scan.hasNextLine()) {
             String line = scan.nextLine();
             String aux;
@@ -47,7 +55,7 @@ public class miclienteSearchSolrj {
                 Texto = Texto.replace(")","");
                 //**************************
                 //EJECUTO CONSULTA CON LAS 5 PALABRAS
-                System.out.println("Busquedas para consulta (" + qryIndex++ +"): " + Texto);
+                System.out.println("Busquedas para consulta (" + Texto);
                 HttpSolrClient solr = new HttpSolrClient.Builder("http://localhost:8983/solr/lacoleccion").build();
                 SolrQuery query = new SolrQuery();
                 query.set("q", "Texto:" + Texto);
@@ -56,13 +64,19 @@ public class miclienteSearchSolrj {
                 QueryResponse rsp = solr.query(query);
                 SolrDocumentList docs = rsp.getResults();
                 for (int j = 0; j < docs.size(); ++j) {
-                    System.out.println(docs.get(j));
+                    String retValue = docs.get(j).toString().replace("SolrDocument{Index=[", "");
+                    retValue = retValue.replace("], score=", " ");
+                    retValue = retValue.replace("}", "");
+                    String[] Spliteo = retValue.split(" ");
+                    toTREC = qryIndex + " I0 " + Spliteo[0] + " "+ j + " " + Spliteo[1] + " DAM";
+                    pw.print(toTREC + "\n");
                     
                 }
                 //***********************
                 Texto = "";
+                qryIndex++;
             }
         }
-
+        fichero.close();
     }
 }
