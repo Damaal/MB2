@@ -22,7 +22,7 @@ public class miclienteSearchSolrj {
     public static void main(String[] args) throws IOException, SolrServerException {
         String fileName = "CISI.QRY";
         String Texto = "";
-
+        //LEO FICHERO QRY
         Scanner scan = new Scanner(new File(fileName));
         while (scan.hasNextLine()) {
             String line = scan.nextLine();
@@ -32,6 +32,7 @@ public class miclienteSearchSolrj {
             } else {
                 aux = line;
             }
+            //OBTENGO LAS 5 PRIMERAS PALABRAS IGNORANDO TABULACIONES
             if (aux.equals(".W")) {
                 int i = 0;
                 while (scan.hasNextLine() && i < 5) {
@@ -40,10 +41,15 @@ public class miclienteSearchSolrj {
                         i++;
                     }
                 }
+                //PARA ELIMINAR PARÉNTESIS
+                Texto = Texto.replace("(","");
+                Texto = Texto.replace(")","");
+                //**************************
+                //EJECUTO CONSULTA CON LAS 5 PALABRAS
                 System.out.println("Busquedas para: " + Texto);
                 HttpSolrClient solr = new HttpSolrClient.Builder("http://localhost:8983/solr/lacoleccion").build();
                 SolrQuery query = new SolrQuery();
-                query.set("q", "Texto:"+Texto);
+                query.set("q", "Texto:" + Texto);
                 //query.addFilterQuery("Texto:"+Texto);
                 query.setFields("Index", "score");
                 QueryResponse rsp = solr.query(query);
@@ -51,6 +57,7 @@ public class miclienteSearchSolrj {
                 for (int j = 0; j < docs.size(); ++j) {
                     System.out.println(docs.get(j));
                 }
+                //***********************
                 Texto = "";
             }
         }
