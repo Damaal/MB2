@@ -55,7 +55,7 @@ public class miclienteSearchSolrj {
                 Texto = Texto.replace(")","");
                 //**************************
                 //EJECUTO CONSULTA CON LAS 5 PALABRAS
-                System.out.println("Busquedas para consulta (" + Texto);
+                //System.out.println("Busquedas para consulta (" + Texto);
                 HttpSolrClient solr = new HttpSolrClient.Builder("http://localhost:8983/solr/lacoleccion").build();
                 SolrQuery query = new SolrQuery();
                 query.set("q", "Texto:" + Texto);
